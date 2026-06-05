@@ -1,27 +1,47 @@
-# BendecalAdmin
+# Bendecal Admin
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.7.
+Application Angular 18 interne pour gérer le catalogue (kits) et consulter les commandes de la boutique [Bendecal](../bendecal/).
 
-## Development server
+## Prérequis
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+- Node.js 18+
+- API Spring Boot en cours d’exécution ([bendecal-api](../bendecal-api/)) sur `http://localhost:8080`
+- CORS : l’API autorise déjà `http://localhost:4201` (voir README de l’API)
 
-## Code scaffolding
+## Configuration
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+| Environnement | API | Boutique (aperçu) | CDN |
+|---------------|-----|-------------------|-----|
+| dev (`environment.ts`) | `http://localhost:8080/api/v1` | `http://localhost:4200` | `https://cdn.bendecal.com` |
+| prod (`environment.prod.ts`) | `https://api.bendecal.com/api/v1` | `https://bendecal.com` | `https://cdn.bendecal.com` |
 
-## Build
+## Démarrage
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+```bash
+npm install
+npm start
+```
 
-## Running unit tests
+L’admin écoute sur **http://localhost:4201** (`ng serve --port 4201`).
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Identifiants admin (développement)
 
-## Running end-to-end tests
+Voir le README de [bendecal-api](../bendecal-api/README.md) :
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+- Email : `admin@bendecal.com`
+- Mot de passe : `changeme` (seed Flyway par défaut)
 
-## Further help
+## Fonctionnalités
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- Connexion JWT (`sessionStorage`), routes protégées, intercepteur `Authorization: Bearer`
+- Dashboard : statistiques kits / featured / commandes récentes
+- CRUD kits (liste, création, édition, suppression, upload images R2 via presign)
+- Commandes en lecture seule (liste + détail)
+
+## Build production
+
+```bash
+npm run build
+```
+
+Les artefacts sont dans `dist/bendecal-admin/`.

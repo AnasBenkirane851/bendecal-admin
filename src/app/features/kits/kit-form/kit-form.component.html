@@ -1,0 +1,169 @@
+<header class="page-header">
+  <div class="min-w-0">
+    <h1 class="section-title">{{ isEdit ? 'Modifier le kit' : 'Nouveau kit' }}</h1>
+    <a routerLink="/kits" class="mt-1 inline-block text-sm text-brand-600 hover:underline">← Retour à la liste</a>
+  </div>
+  @if (isEdit) {
+    <div class="page-header-actions">
+      <button type="button" class="btn-danger" (click)="deleteKit()">Supprimer le kit</button>
+    </div>
+  }
+</header>
+
+@if (loading()) {
+  <p class="text-sm text-ink-muted">Chargement…</p>
+} @else {
+  @if (error()) {
+    <p class="mb-4 rounded-md bg-danger-subtle px-3 py-2 text-sm text-danger">{{ error() }}</p>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="save()" class="space-y-5 sm:space-y-8">
+    <section class="card space-y-4">
+      <h2 class="text-base font-semibold text-ink sm:text-lg">Général</h2>
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div>
+          <label class="label-field" for="name">Nom</label>
+          <input id="name" class="input-field" formControlName="name" />
+        </div>
+        <div>
+          <label class="label-field" for="slug">Slug</label>
+          <input id="slug" class="input-field" formControlName="slug" (input)="onSlugInput()" />
+        </div>
+      </div>
+      <div>
+        <label class="label-field" for="shortDescription">Description courte</label>
+        <input id="shortDescription" class="input-field" formControlName="shortDescription" />
+      </div>
+      <div>
+        <label class="label-field" for="description">Description</label>
+        <textarea id="description" class="input-field min-h-28 sm:min-h-32" formControlName="description"></textarea>
+      </div>
+      <label class="inline-flex min-h-11 items-center gap-3 text-sm">
+        <input type="checkbox" formControlName="featured" class="h-5 w-5 rounded border-line text-brand-600" />
+        Mis en avant (featured)
+      </label>
+    </section>
+
+    <section class="card space-y-4">
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <h2 class="text-base font-semibold text-ink sm:text-lg">Images</h2>
+        <label class="btn-secondary shrink-0 cursor-pointer">
+          {{ uploading() ? 'Upload…' : 'Ajouter une image' }}
+          <input type="file" accept="image/*" class="hidden" (change)="onFileSelected($event)" [disabled]="uploading()" />
+        </label>
+      </div>
+      @if (!images.length) {
+        <p class="text-sm text-ink-muted">Aucune image. L’ordre est enregistré à la sauvegarde.</p>
+      } @else {
+        <ul class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          @for (key of images; track key; let i = $index) {
+            <li class="flex gap-3 rounded-md border border-line p-3">
+              <img [src]="imageUrl(key)" alt="" class="h-20 w-20 shrink-0 rounded object-cover" />
+              <div class="min-w-0 flex-1">
+                <p class="truncate text-xs text-ink-muted" [title]="key">{{ key }}</p>
+                <div class="mt-2 flex flex-wrap gap-1">
+                  <button type="button" class="btn-ghost min-h-9 px-2 py-1 text-xs" (click)="moveImage(i, -1)" [disabled]="i === 0">↑</button>
+                  <button type="button" class="btn-ghost min-h-9 px-2 py-1 text-xs" (click)="moveImage(i, 1)" [disabled]="i === images.length - 1">↓</button>
+                  <button type="button" class="btn-ghost min-h-9 px-2 py-1 text-xs text-danger" (click)="removeImage(i)">Retirer</button>
+                </div>
+              </div>
+            </li>
+          }
+        </ul>
+      }
+    </section>
+
+    <section class="card space-y-4">
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <h2 class="text-base font-semibold text-ink sm:text-lg">Fitments</h2>
+        <button type="button" class="btn-secondary shrink-0" (click)="addFitment()">Ajouter</button>
+      </div>
+      <div class="space-y-3" formArrayName="fitments">
+        @for (row of fitments.controls; track $index; let i = $index) {
+          <div [formGroupName]="i" class="grid grid-cols-1 gap-3 rounded-md border border-line p-3 sm:grid-cols-2 lg:grid-cols-5">
+            <div class="sm:col-span-2 lg:col-span-1">
+              <label class="label-field">Marque</label>
+              <input class="input-field" formControlName="make" list="makes-list" />
+            </div>
+            <div class="sm:col-span-2 lg:col-span-1">
+              <label class="label-field">Modèle</label>
+              <input class="input-field" formControlName="model" />
+            </div>
+            <div>
+              <label class="label-field">Année début</label>
+              <input type="number" class="input-field" formControlName="yearFrom" />
+            </div>
+            <div>
+              <label class="label-field">Année fin</label>
+              <input type="number" class="input-field" formControlName="yearTo" />
+            </div>
+            <div class="flex items-end sm:col-span-2 lg:col-span-1">
+              <button type="button" class="btn-ghost w-full text-danger sm:w-auto" (click)="removeFitment(i)" [disabled]="fitments.length <= 1">
+                Retirer
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+      <datalist id="makes-list">
+        @for (m of makes(); track m) {
+          <option [value]="m"></option>
+        }
+      </datalist>
+    </section>
+
+    <section class="card space-y-4">
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <h2 class="text-base font-semibold text-ink sm:text-lg">Variantes</h2>
+        <button type="button" class="btn-secondary shrink-0" (click)="addVariant()">Ajouter</button>
+      </div>
+      <div class="space-y-3" formArrayName="variants">
+        @for (row of variants.controls; track $index; let i = $index) {
+          <div [formGroupName]="i" class="grid grid-cols-1 gap-3 rounded-md border border-line p-3 sm:grid-cols-2 lg:grid-cols-6">
+            <div class="sm:col-span-2 lg:col-span-2">
+              <label class="label-field">Label</label>
+              <input class="input-field" formControlName="label" />
+            </div>
+            <div>
+              <label class="label-field">SKU</label>
+              <input class="input-field" formControlName="sku" />
+            </div>
+            <div>
+              <label class="label-field">Prix (€)</label>
+              <input class="input-field" formControlName="priceEuro" placeholder="189.00" inputmode="decimal" />
+            </div>
+            <div>
+              <label class="label-field">Couleur</label>
+              <input type="color" class="h-11 w-full min-h-11 cursor-pointer rounded border border-line p-1" formControlName="colorHex" />
+            </div>
+            <div class="flex items-end sm:col-span-2 lg:col-span-1">
+              <button type="button" class="btn-ghost w-full text-danger sm:w-auto" (click)="removeVariant(i)" [disabled]="variants.length <= 1">
+                Retirer
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    </section>
+
+    <section class="card space-y-4">
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <h2 class="text-base font-semibold text-ink sm:text-lg">Contenu du kit (includes)</h2>
+        <button type="button" class="btn-secondary shrink-0" (click)="addInclude()">Ajouter</button>
+      </div>
+      <div class="space-y-2" formArrayName="includes">
+        @for (row of includes.controls; track $index; let i = $index) {
+          <div [formGroupName]="i" class="flex flex-col gap-2 sm:flex-row">
+            <input class="input-field min-w-0 flex-1" formControlName="value" placeholder="Élément inclus" />
+            <button type="button" class="btn-ghost shrink-0 text-danger" (click)="removeInclude(i)">Retirer</button>
+          </div>
+        }
+      </div>
+    </section>
+
+    <div class="page-header-actions sticky bottom-20 z-10 -mx-1 rounded-lg border border-line bg-white/95 p-3 backdrop-blur sm:static sm:border-0 sm:bg-transparent sm:p-0 lg:bottom-auto">
+      <button type="submit" class="btn-primary" [disabled]="saving()">{{ saving() ? 'Enregistrement…' : 'Enregistrer' }}</button>
+      <button type="button" class="btn-secondary" (click)="cancel()">Annuler</button>
+    </div>
+  </form>
+}
