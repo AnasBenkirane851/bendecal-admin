@@ -17,10 +17,9 @@ import { FitmentService } from '../../../data/fitment.service';
 import { UploadService } from '../../../data/upload.service';
 
 @Component({
-  selector: 'app-kit-form',
-  standalone: true,
-  imports: [ReactiveFormsModule, RouterLink],
-  templateUrl: './kit-form.component.html',
+    selector: 'app-kit-form',
+    imports: [ReactiveFormsModule, RouterLink],
+    templateUrl: './kit-form.component.html'
 })
 export class KitFormComponent implements OnInit {
   private readonly fb = inject(FormBuilder);

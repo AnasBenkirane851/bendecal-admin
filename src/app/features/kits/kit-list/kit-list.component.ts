@@ -10,10 +10,9 @@ import { Kit } from '../../../core/models/kit.model';
 import { AdminKitService } from '../../../data/admin-kit.service';
 
 @Component({
-  selector: 'app-kit-list',
-  standalone: true,
-  imports: [RouterLink, FormsModule],
-  template: `
+    selector: 'app-kit-list',
+    imports: [RouterLink, FormsModule],
+    template: `
     <header class="page-header">
       <div>
         <h1 class="section-title">Kits</h1>
@@ -122,7 +121,7 @@ import { AdminKitService } from '../../../data/admin-kit.service';
         </table>
       </div>
     }
-  `,
+  `
 })
 export class KitListComponent implements OnInit {
   private readonly kitService = inject(AdminKitService);

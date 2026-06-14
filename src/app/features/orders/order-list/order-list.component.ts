@@ -7,10 +7,9 @@ import { PricePipe } from '../../../shared/pipes/price.pipe';
 import { AdminOrderService } from '../../../data/admin-order.service';
 
 @Component({
-  selector: 'app-order-list',
-  standalone: true,
-  imports: [RouterLink, DatePipe, PricePipe],
-  template: `
+    selector: 'app-order-list',
+    imports: [RouterLink, DatePipe, PricePipe],
+    template: `
     <header class="page-header">
       <div>
         <h1 class="section-title">Commandes</h1>
@@ -76,7 +75,7 @@ import { AdminOrderService } from '../../../data/admin-order.service';
         </table>
       </div>
     }
-  `,
+  `
 })
 export class OrderListComponent implements OnInit {
   private readonly orderService = inject(AdminOrderService);

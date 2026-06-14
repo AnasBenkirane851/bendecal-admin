@@ -4,10 +4,9 @@ import { filter } from 'rxjs';
 import { AuthService } from '../../core/auth/auth.service';
 
 @Component({
-  selector: 'app-admin-shell',
-  standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive],
-  template: `
+    selector: 'app-admin-shell',
+    imports: [RouterOutlet, RouterLink, RouterLinkActive],
+    template: `
     <div class="flex min-h-screen min-h-[100dvh] flex-col lg:flex-row">
       @if (navOpen()) {
         <button
@@ -108,7 +107,7 @@ import { AuthService } from '../../core/auth/auth.service';
         </nav>
       </div>
     </div>
-  `,
+  `
 })
 export class AdminShellComponent {
   private readonly auth = inject(AuthService);

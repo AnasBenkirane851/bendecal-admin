@@ -6,10 +6,9 @@ import { AdminOrderService } from '../../data/admin-order.service';
 import { apiErrorMessage } from '../../core/utils/http-error.util';
 
 @Component({
-  selector: 'app-dashboard',
-  standalone: true,
-  imports: [RouterLink],
-  template: `
+    selector: 'app-dashboard',
+    imports: [RouterLink],
+    template: `
     <header class="page-header">
       <div>
         <h1 class="section-title">Dashboard</h1>
@@ -44,7 +43,7 @@ import { apiErrorMessage } from '../../core/utils/http-error.util';
         <a routerLink="/orders" class="btn-secondary">Voir les commandes</a>
       </div>
     }
-  `,
+  `
 })
 export class DashboardComponent implements OnInit {
   private readonly kitService = inject(AdminKitService);

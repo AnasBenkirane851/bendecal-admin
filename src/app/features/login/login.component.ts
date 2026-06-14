@@ -5,10 +5,9 @@ import { AuthService } from '../../core/auth/auth.service';
 import { apiErrorMessage } from '../../core/utils/http-error.util';
 
 @Component({
-  selector: 'app-login',
-  standalone: true,
-  imports: [ReactiveFormsModule],
-  template: `
+    selector: 'app-login',
+    imports: [ReactiveFormsModule],
+    template: `
     <div
       class="flex min-h-screen min-h-[100dvh] items-center justify-center bg-surface-subtle px-4 py-8 pb-[env(safe-area-inset-bottom)]"
     >
@@ -47,7 +46,7 @@ import { apiErrorMessage } from '../../core/utils/http-error.util';
         </form>
       </div>
     </div>
-  `,
+  `
 })
 export class LoginComponent {
   private readonly fb = inject(FormBuilder);

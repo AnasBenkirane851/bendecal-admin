@@ -8,10 +8,9 @@ import { PricePipe } from '../../../shared/pipes/price.pipe';
 import { AdminOrderService } from '../../../data/admin-order.service';
 
 @Component({
-  selector: 'app-order-detail',
-  standalone: true,
-  imports: [RouterLink, DatePipe, PricePipe],
-  template: `
+    selector: 'app-order-detail',
+    imports: [RouterLink, DatePipe, PricePipe],
+    template: `
     <header class="page-header">
       <div class="min-w-0">
         <a routerLink="/orders" class="text-sm text-brand-600 hover:underline">← Commandes</a>
@@ -77,7 +76,7 @@ import { AdminOrderService } from '../../../data/admin-order.service';
         </dl>
       </section>
     }
-  `,
+  `
 })
 export class OrderDetailComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
